@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paróquia de São Judas Tadeu</title>
+    <!-- Inclui a biblioteca de ícones Heroicons via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/24/solid/esm/index.js"></script>
+    <!-- Inclui o Tailwind CSS para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+        .hero-bg {
+            background-image: url('https://placehold.co/1200x800/2c5282/ffffff?text=Paróquia+São+Judas+Tadeu');
+            background-size: cover;
+            background-position: center;
+        }
+        .section-bg-dark {
+            background-color: #2d3748;
+            color: white;
+        }
+        .icon {
+            fill: currentColor;
+            width: 2rem;
+            height: 2rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Cabeçalho e Navegação -->
+    <header class="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-xl font-bold text-blue-800 hover:text-blue-600 transition-colors">
+                São Judas Tadeu
+            </a>
+            <div class="hidden md:flex space-x-6">
+                <a href="#transmissao" class="text-gray-600 hover:text-blue-800 transition-colors">Transmissão</a>
+                <a href="#radio" class="text-gray-600 hover:text-blue-800 transition-colors">Webrádio</a>
+                <a href="#leitura" class="text-gray-600 hover:text-blue-800 transition-colors">Leitura Diária</a>
+                <a href="#eventos" class="text-gray-600 hover:text-blue-800 transition-colors">Eventos</a>
+                <a href="#grupos" class="text-gray-600 hover:text-blue-800 transition-colors">Grupos de Oração</a>
+                <a href="#obras" class="text-gray-600 hover:text-blue-800 transition-colors">Obras</a>
+                <a href="#doacoes" class="text-gray-600 hover:text-blue-800 transition-colors">Doações</a>
+            </div>
+            <!-- Menu mobile -->
+            <button id="menu-btn" class="md:hidden text-gray-600 hover:text-blue-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <!-- Menu dropdown mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg py-2">
+            <a href="#transmissao" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Transmissão</a>
+            <a href="#radio" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Webrádio</a>
+            <a href="#leitura" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Leitura Diária</a>
+            <a href="#eventos" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Eventos</a>
+            <a href="#grupos" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Grupos de Oração</a>
+            <a href="#obras" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Obras</a>
+            <a href="#doacoes" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Doações</a>
+        </div>
+    </header>
+
+    <main class="pt-16">
+
+        <!-- Seção Principal (Hero) -->
+        <section id="home" class="hero-bg h-screen flex items-center justify-center text-center text-white p-4">
+            <div class="bg-black bg-opacity-50 p-8 rounded-lg max-w-2xl">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Bem-vindo à Paróquia de São Judas Tadeu</h1>
+                <p class="text-lg md:text-xl mb-6">
+                    "A esperança não engana." (Rm 5,5)
+                </p>
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center">
+                    <a href="#transmissao" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition-colors">
+                        Assistir Missa Ao Vivo
+                    </a>
+                    <a href="#doacoes" class="bg-gray-200 hover:bg-gray-300 text-blue-800 font-bold py-3 px-6 rounded-full transition-colors">
+                        Faça sua Doação
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Transmissão das Missas -->
+        <section id="transmissao" class="py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold text-blue-800 mb-8">Transmissão das Missas</h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Acompanhe as celebrações ao vivo em nosso canal do YouTube. A transmissão começa 10 minutos antes do horário da missa.
+                </p>
+                <div class="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+                    <!-- Substitua o link do vídeo abaixo pelo link do seu YouTube Live -->
+                    <iframe 
+                        class="absolute top-0 left-0 w-full h-full" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=iXfWvY-U0iMvK1gq" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen
+                    ></iframe>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção de Webrádio -->
+        <section id="radio" class="section-bg-dark py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-8">Nossa Webrádio</h2>
+                <p class="text-lg text-gray-300 mb-8">
+                    Sintonize a nossa rádio 24 horas por dia com músicas, orações e programas de evangelização.
+                </p>
+                <div class="flex flex-col items-center">
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl w-full max-w-xl">
+                        <h3 class="text-xl font-bold mb-4">Paróquia São Judas Tadeu FM</h3>
+                        <!-- Substitua o URL abaixo pela URL do seu stream de rádio -->
+                        <audio controls class="w-full">
+                            <source src="https://example.com/seu-stream-de-radio.mp3" type="audio/mpeg">
+                            Seu navegador não suporta o elemento de áudio.
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Leitura Diária -->
+        <section id="leitura" class="py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold text-blue-800 mb-8">Leitura Diária</h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Aqui você encontra a Liturgia da Palavra para o dia de hoje.
+                </p>
+                <div class="bg-white p-8 rounded-lg shadow-lg text-left">
+                    <h3 class="text-2xl font-semibold mb-4 text-blue-700">Liturgia do Dia</h3>
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="font-bold">PRIMEIRA LEITURA (At 2,42-47)</p>
+                        <p>
+                            Eles eram perseverantes em ouvir o ensinamento dos apóstolos, na comunhão fraterna, na fração do pão e nas orações.
+                            Muitos sinais e prodígios eram realizados pelos apóstolos, e um grande temor se apossava de todos.
+                            Todos os que abraçavam a fé viviam unidos e partilhavam seus bens.
+                        </p>
+                        <p class="font-bold mt-4">EVANGELHO (Jo 20,19-31)</p>
+                        <p>
+                            Ao anoitecer daquele dia, o primeiro da semana, os discípulos estavam reunidos com as portas fechadas por medo dos judeus. Jesus entrou e, pondo-se no meio deles, disse: “A paz esteja convosco”.
+                        </p>
+                        <!-- Adicione aqui as outras leituras e o salmo -->
+                    </div>
+                    <p class="mt-8 text-sm text-gray-500">
+                        *Lembre-se de atualizar esta seção diariamente.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Eventos -->
+        <section id="eventos" class="section-bg-dark py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-8">Nossa Agenda de Eventos</h2>
+                <p class="text-lg text-gray-300 mb-8">
+                    Confira a programação completa de missas, retiros e encontros da paróquia.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Cartão de Evento 1 -->
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-left">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <span class="text-4xl font-bold text-blue-400">12</span>
+                            <div>
+                                <h4 class="font-semibold text-lg text-white">Retiro de Jovens</h4>
+                                <p class="text-gray-400">Sábado, 12 de Outubro</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">
+                            Um dia de oração e reflexão para a juventude da paróquia. Inscrições abertas na secretaria.
+                        </p>
+                    </div>
+                    <!-- Cartão de Evento 2 -->
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-left">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <span class="text-4xl font-bold text-blue-400">25</span>
+                            <div>
+                                <h4 class="font-semibold text-lg text-white">Festa de São Judas Tadeu</h4>
+                                <p class="text-gray-400">Sexta-feira, 25 de Outubro</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">
+                            Celebração solene em honra ao nosso padroeiro com procissão e missa especial.
+                        </p>
+                    </div>
+                    <!-- Cartão de Evento 3 -->
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-left">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <span class="text-4xl font-bold text-blue-400">01</span>
+                            <div>
+                                <h4 class="font-semibold text-lg text-white">Missa dos Dizimistas</h4>
+                                <p class="text-gray-400">Sexta-feira, 01 de Novembro</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">
+                            Uma missa de agradecimento dedicada a todos os dizimistas da paróquia.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Grupos de Oração -->
+        <section id="grupos" class="py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold text-blue-800 mb-8">Grupos de Oração e Pastorais</h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Venha participar de nossos grupos e fortalecer sua fé.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Cartão de Grupo 1 -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://placehold.co/600x400/8d6e63/ffffff?text=Grupo+Jovens" alt="Grupo de Jovens" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-semibold mb-2 text-blue-700">Grupo de Jovens</h4>
+                            <p class="text-gray-600">
+                                Encontros semanais de oração e partilha para a juventude.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Cartão de Grupo 2 -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://placehold.co/600x400/4a5568/ffffff?text=Legião+de+Maria" alt="Legião de Maria" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-semibold mb-2 text-blue-700">Legião de Maria</h4>
+                            <p class="text-gray-600">
+                                Serviço à comunidade e evangelização sob a proteção de Nossa Senhora.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Cartão de Grupo 3 -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <img src="https://placehold.co/600x400/90c1e8/ffffff?text=Catequese" alt="Catequese" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-semibold mb-2 text-blue-700">Catequese</h4>
+                            <p class="text-gray-600">
+                                Preparação para a Primeira Comunhão e Crisma.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Obras da Paróquia -->
+        <section id="obras" class="section-bg-dark py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-8">Obras e Ações Sociais</h2>
+                <p class="text-lg text-gray-300 mb-8">
+                    Conheça e ajude as obras sociais que a paróquia mantém.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Cartão de Obra 1 -->
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-left">
+                        <img src="https://placehold.co/600x400/b8b4b2/ffffff?text=Sopão" alt="Sopão Solidário" class="w-full h-48 object-cover rounded mb-4">
+                        <h4 class="text-xl font-semibold mb-2 text-white">Sopão Solidário</h4>
+                        <p class="text-gray-300">
+                            Distribuição de refeições para a população em situação de rua, todas as terças-feiras.
+                        </p>
+                    </div>
+                    <!-- Cartão de Obra 2 -->
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-left">
+                        <img src="https://placehold.co/600x400/5a67d8/ffffff?text=Cestas" alt="Cestas de Alimentos" class="w-full h-48 object-cover rounded mb-4">
+                        <h4 class="text-xl font-semibold mb-2 text-white">Cestas de Alimentos</h4>
+                        <p class="text-gray-300">
+                            Campanha de arrecadação e doação de cestas básicas para famílias carentes.
+                        </p>
+                    </div>
+                    <!-- Cartão de Obra 3 -->
+                    <div class="bg-gray-700 p-6 rounded-lg shadow-xl text-left">
+                        <img src="https://placehold.co/600x400/38a169/ffffff?text=Roupa" alt="Campanha de Roupas" class="w-full h-48 object-cover rounded mb-4">
+                        <h4 class="text-xl font-semibold mb-2 text-white">Campanha de Roupas</h4>
+                        <p class="text-gray-300">
+                            Coleta de roupas e agasalhos para ajudar os mais necessitados no inverno.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Doações -->
+        <section id="doacoes" class="py-16 px-4 md:px-8">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl font-bold text-blue-800 mb-8">Ajude a Manter Nossa Missão</h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Sua doação é fundamental para a evangelização e para a manutenção de nossas obras sociais.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Doação via PIX -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <div class="flex flex-col items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-green-500 mb-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm-1-9H8v5h4V8zm4 0h-2v5h4V8z"/>
+                            </svg>
+                            <h4 class="text-xl font-semibold mb-2 text-gray-700">Doação via PIX</h4>
+                            <p class="text-gray-600 mb-4">
+                                Use a chave PIX abaixo ou escaneie o código QR.
+                            </p>
+                            <img src="https://placehold.co/200x200/42a061/ffffff?text=QR+Code+PIX" alt="QR Code PIX" class="w-32 h-32 rounded mb-4">
+                            <p class="font-bold text-gray-800">Chave PIX: paroquia.sjt@email.com</p>
+                            <button onclick="copyToClipboard('paroquia.sjt@email.com')" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                                Copiar Chave
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Doação via Transferência -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <div class="flex flex-col items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-blue-500 mb-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M21 18V6c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM5 6h14v12H5V6zm14 11H5v-2h14v2zm0-4H5V8h14v5z"/>
+                            </svg>
+                            <h4 class="text-xl font-semibold mb-2 text-gray-700">Transferência Bancária</h4>
+                            <p class="text-gray-600">
+                                Contribua diretamente para a conta da paróquia.
+                            </p>
+                            <div class="mt-4 text-left bg-gray-100 p-4 rounded-lg w-full">
+                                <p><strong>Banco:</strong> Banco do Brasil</p>
+                                <p><strong>Agência:</strong> 1234-5</p>
+                                <p><strong>Conta:</strong> 54321-0</p>
+                                <p><strong>CNPJ:</strong> 00.123.456/0001-78</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Doação via PagSeguro/PayPal -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <div class="flex flex-col items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-indigo-500 mb-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4 11H8v-2h8v2z"/>
+                            </svg>
+                            <h4 class="text-xl font-semibold mb-2 text-gray-700">Outras Formas</h4>
+                            <p class="text-gray-600 mb-4">
+                                Clique para ser redirecionado para a página de doações.
+                            </p>
+                            <!-- Substitua o link abaixo pela sua página de doação -->
+                            <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                                Doar via Cartão
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-blue-800 text-white py-12 px-4 md:px-8 mt-12">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <h4 class="text-xl font-bold mb-2">Paróquia de São Judas Tadeu</h4>
+                <p>Rua das Flores, 123 - Centro</p>
+                <p>Cidade - Estado</p>
+                <p>Email: contato@paroquia.com.br</p>
+                <p>Telefone: (00) 1234-5678</p>
+            </div>
+            <div class="flex space-x-4">
+                <!-- Links para redes sociais (adicione os links reais) -->
+                <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.58.012 4.85.07c.832.037 1.25.174 1.58.307.39.155.672.333.978.638.306.306.484.587.638.978.133.33.27.748.307 1.58.058 1.27.07 1.646.07 4.85s-.012 3.58-.07 4.85c-.037.832-.174 1.25-.307 1.58-.155.39-.333.672-.638.978-.306.306-.587.484-.978.638-.133.33-.27.748-.307 1.58-.058 1.27-.07 1.646-.07 4.85s.012 3.58.07 4.85c.037-.832.174-1.25.307-1.58.155-.39.333-.672.638-.978.306-.306.587-.484.978-.638.33-.133.748-.27 1.58-.307 1.27-.058 1.646-.07 4.85-.07zm0-2.163c-3.266 0-3.678.013-4.948.07-1.31.057-2.1.27-2.73.57-.65.3-1.18.66-1.74 1.22s-.92 1.09-1.22 1.74c-.3.63-.51 1.42-.57 2.73-.057 1.27-.07 1.68-.07 4.948s.013 3.678.07 4.948c.057 1.31.27 2.1.57 2.73.3.65.66 1.18 1.22 1.74s1.09.92 1.74 1.22c.63.3 1.42.51 2.73.57 1.27.057 1.68.07 4.948.07s3.678-.013 4.948-.07c1.31-.057 2.1-.27 2.73-.57.65-.3 1.18-.66 1.74-1.22s.92-1.09 1.22-1.74c.3-.63.51-1.42.57-2.73.057-1.27.07-1.68.07-4.948s-.013-3.678-.07-4.948c-.057-1.31-.27-2.1-.57-2.73-.3-.65-.66-1.18-1.22-1.74s-1.09-.92-1.74-1.22c-.63-.3-1.42-.51-2.73-.57-1.27-.057-1.68-.07-4.948-.07zM12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4 9h4V7h2v4h4v2h-4v4h-2v-4H8v-2z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Função para copiar texto para a área de transferência
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert("Chave PIX copiada!");
+        }
+
+        // Script para o menu mobile
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Oculta o menu ao clicar em um link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Fecha o menu se a janela for redimensionada para desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

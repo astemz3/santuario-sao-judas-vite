@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        .chat-header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .message-list {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        .message {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .message.sent {
+            background-color: #d1e7fd;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .message.received {
+            background-color: #e2e8f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+        }
+        .message-input-form {
+            display: flex;
+            padding: 1rem;
+            background-color: #fff;
+            border-top: 1px solid #e5e7eb;
+        }
+        .message-input {
+            flex: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            outline: none;
+        }
+        .send-button {
+            margin-left: 0.5rem;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .send-button:hover {
+            background-color: #357abd;
+        }
+        .login-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .login-box {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4a90e2;
+            animation: spin 1s ease infinite;
+            display: none;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db;
+        let auth;
+        let userId;
+
+        // Function to show and hide the login panel and spinner
+        window.showLoginPanel = function() {
+            document.getElementById('login-panel').classList.remove('hidden');
+        }
+
+        window.hideLoginPanel = function() {
+            document.getElementById('login-panel').classList.add('hidden');
+        }
+
+        window.showSpinner = function() {
+            document.getElementById('spinner').style.display = 'block';
+        }
+
+        window.hideSpinner = function() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+
+        // Initialize Firebase
+        async function initializeFirebase() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Authenticate the user
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                userId = auth.currentUser.uid;
+                hideLoginPanel();
+                setupChat();
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                document.getElementById('status-message').textContent = `Erro de inicialização: ${error.message}`;
+            }
+        }
+
+        function setupChat() {
+            const messageList = document.getElementById('message-list');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const userIdDisplay = document.getElementById('user-id-display');
+
+            // Display the user ID for sharing
+            userIdDisplay.textContent = `Seu ID: ${userId}`;
+
+            // Firestore collections path
+            const messagesCollection = collection(db, `artifacts/${appId}/public/data/messages`);
+
+            // Listen for new messages in real-time
+            const q = query(messagesCollection);
+            onSnapshot(q, (querySnapshot) => {
+                const messages = [];
+                querySnapshot.forEach((doc) => {
+                    messages.push(doc.data());
+                });
+
+                // Sort messages by timestamp
+                messages.sort((a, b) => a.timestamp - b.timestamp);
+
+                messageList.innerHTML = '';
+                messages.forEach(msg => {
+                    const messageElement = document.createElement('div');
+                    const isSent = msg.userId === userId;
+                    const messageClass = isSent ? 'sent' : 'received';
+                    const userName = msg.userName || 'Anônimo';
+
+                    messageElement.classList.add('message', messageClass);
+                    messageElement.innerHTML = `
+                        <div class="font-semibold text-sm">${userName}</div>
+                        <div>${msg.text}</div>
+                    `;
+                    messageList.prepend(messageElement); // Use prepend to add new messages to the top
+                });
+            });
+
+            // Handle form submission
+            messageForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = messageInput.value.trim();
+                if (text === '') return;
+
+                const userName = `Usuário ${userId.substring(0, 4)}`;
+
+                try {
+                    await addDoc(messagesCollection, {
+                        text: text,
+                        userId: userId,
+                        userName: userName,
+                        timestamp: serverTimestamp()
+                    });
+                    messageInput.value = '';
+                } catch (e) {
+                    console.error("Erro ao adicionar documento: ", e);
+                }
+            });
+        }
+
+        // Initialize the app on window load
+        window.onload = initializeFirebase;
+    </script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Login/Status Panel -->
+    <div id="login-panel" class="login-panel hidden">
+        <div class="login-box">
+            <h2 class="text-2xl font-bold mb-4">Carregando Chat...</h2>
+            <div id="spinner" class="spinner"></div>
+            <p id="status-message" class="text-gray-600 mt-4">Conectando ao Firebase...</p>
+        </div>
+    </div>
+
+    <!-- Main Chat UI -->
+    <div class="chat-container rounded-3xl">
+        <!-- Chat Header -->
+        <div class="chat-header rounded-t-3xl">
+            <h1 class="text-xl font-bold">Chat Público</h1>
+            <div id="user-id-display" class="text-sm font-medium"></div>
+        </div>
+
+        <!-- Message List -->
+        <div id="message-list" class="message-list">
+            <!-- Messages will be dynamically added here -->
+        </div>
+
+        <!-- Message Input Form -->
+        <form id="message-form" class="message-input-form">
+            <input type="text" id="message-input" placeholder="Escreva uma mensagem..." class="message-input" autocomplete="off">
+            <button type="submit" class="send-button">
+                Enviar
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

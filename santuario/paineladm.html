@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+        }
+        .btn-primary:hover {
+            background-color: #357abd;
+        }
+        .btn-danger {
+            background-color: #ef4444;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        .btn-edit {
+            background-color: #f59e0b;
+        }
+        .btn-edit:hover {
+            background-color: #d97706;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-6">Painel Administrativo</h1>
+        <p class="text-sm text-center text-gray-500 mb-6">Aqui você pode gerenciar anúncios do site.</p>
+
+        <!-- Formulário para Adicionar/Editar Anúncio -->
+        <form id="announcement-form" class="mb-8 p-6 border border-gray-200 rounded-lg">
+            <h2 class="text-2xl font-semibold mb-4" id="form-title">Adicionar Novo Anúncio</h2>
+            <input type="hidden" id="announcement-id">
+            <input type="text" id="announcement-title" placeholder="Título do Anúncio" class="form-input" required>
+            <textarea id="announcement-content" rows="4" placeholder="Conteúdo do Anúncio" class="form-textarea" required></textarea>
+            <button type="submit" id="submit-btn" class="btn btn-primary w-full">Salvar Anúncio</button>
+            <button type="button" id="cancel-btn" class="btn btn-danger w-full mt-2 hidden">Cancelar Edição</button>
+        </form>
+
+        <!-- Lista de Anúncios Existentes -->
+        <h2 class="text-2xl font-semibold mb-4">Anúncios Existentes</h2>
+        <div id="announcements-list" class="space-y-4">
+            <!-- Anúncios serão carregados aqui dinamicamente -->
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Variáveis globais fornecidas pelo ambiente Canvas
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db;
+        let auth;
+        let userId;
+
+        // Elementos do DOM
+        const announcementForm = document.getElementById('announcement-form');
+        const announcementTitleInput = document.getElementById('announcement-title');
+        const announcementContentInput = document.getElementById('announcement-content');
+        const announcementIdInput = document.getElementById('announcement-id');
+        const announcementsList = document.getElementById('announcements-list');
+        const formTitle = document.getElementById('form-title');
+        const submitBtn = document.getElementById('submit-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        // Inicializar Firebase
+        async function initializeFirebase() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Autenticar o usuário
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                userId = auth.currentUser.uid;
+                setupAdminPanel();
+            } catch (error) {
+                console.error("Erro ao inicializar o Firebase:", error);
+                alert(`Erro de inicialização: ${error.message}`);
+            }
+        }
+
+        // Configurar o painel administrativo
+        function setupAdminPanel() {
+            // Coleção Firestore para os anúncios públicos
+            const announcementsCollection = collection(db, `artifacts/${appId}/public/data/announcements`);
+
+            // Escutar por mudanças nos anúncios em tempo real
+            onSnapshot(announcementsCollection, (querySnapshot) => {
+                const announcements = [];
+                querySnapshot.forEach((doc) => {
+                    announcements.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Ordenar por data de criação (se existir)
+                announcements.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+                renderAnnouncements(announcements);
+            });
+
+            // Lidar com o envio do formulário
+            announcementForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const title = announcementTitleInput.value.trim();
+                const content = announcementContentInput.value.trim();
+                const id = announcementIdInput.value;
+
+                if (!title || !content) {
+                    alert('Por favor, preencha todos os campos.');
+                    return;
+                }
+
+                try {
+                    if (id) {
+                        // Modo de Edição: Atualizar documento existente
+                        const docRef = doc(db, `artifacts/${appId}/public/data/announcements`, id);
+                        await updateDoc(docRef, {
+                            title: title,
+                            content: content
+                        });
+                        alert('Anúncio atualizado com sucesso!');
+                    } else {
+                        // Modo de Criação: Adicionar novo documento
+                        await addDoc(announcementsCollection, {
+                            title: title,
+                            content: content,
+                            timestamp: serverTimestamp()
+                        });
+                        alert('Anúncio criado com sucesso!');
+                    }
+
+                    // Limpar formulário e reverter para o modo de criação
+                    announcementForm.reset();
+                    announcementIdInput.value = '';
+                    formTitle.textContent = 'Adicionar Novo Anúncio';
+                    submitBtn.textContent = 'Salvar Anúncio';
+                    cancelBtn.classList.add('hidden');
+                } catch (error) {
+                    console.error("Erro ao salvar o anúncio:", error);
+                    alert(`Erro ao salvar: ${error.message}`);
+                }
+            });
+
+            // Lidar com o botão de cancelar edição
+            cancelBtn.addEventListener('click', () => {
+                announcementForm.reset();
+                announcementIdInput.value = '';
+                formTitle.textContent = 'Adicionar Novo Anúncio';
+                submitBtn.textContent = 'Salvar Anúncio';
+                cancelBtn.classList.add('hidden');
+            });
+        }
+
+        // Renderizar a lista de anúncios
+        function renderAnnouncements(announcements) {
+            announcementsList.innerHTML = '';
+            if (announcements.length === 0) {
+                announcementsList.innerHTML = '<p class="text-center text-gray-500">Nenhum anúncio encontrado.</p>';
+            }
+
+            announcements.forEach(announcement => {
+                const announcementCard = document.createElement('div');
+                announcementCard.className = 'p-4 border border-gray-200 rounded-lg flex justify-between items-center';
+                announcementCard.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-lg">${announcement.title}</h3>
+                        <p class="text-sm text-gray-600">${announcement.content}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-edit text-sm mr-2" data-id="${announcement.id}">Editar</button>
+                        <button class="btn btn-danger text-sm" data-id="${announcement.id}">Excluir</button>
+                    </div>
+                `;
+                announcementsList.appendChild(announcementCard);
+            });
+        }
+
+        // Lidar com cliques nos botões de Editar e Excluir
+        announcementsList.addEventListener('click', async (e) => {
+            const target = e.target;
+            const id = target.getAttribute('data-id');
+
+            if (target.textContent === 'Excluir' && id) {
+                if (confirm('Tem certeza de que deseja excluir este anúncio?')) {
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/public/data/announcements`, id));
+                        alert('Anúncio excluído com sucesso!');
+                    } catch (error) {
+                        console.error("Erro ao excluir o anúncio:", error);
+                        alert(`Erro ao excluir: ${error.message}`);
+                    }
+                }
+            } else if (target.textContent === 'Editar' && id) {
+                // Preencher o formulário para edição
+                const announcement = announcements.find(a => a.id === id);
+                if (announcement) {
+                    announcementIdInput.value = id;
+                    announcementTitleInput.value = announcement.title;
+                    announcementContentInput.value = announcement.content;
+                    formTitle.textContent = 'Editar Anúncio';
+                    submitBtn.textContent = 'Atualizar Anúncio';
+                    cancelBtn.classList.remove('hidden');
+                }
+            }
+        });
+
+        // Inicializar o aplicativo ao carregar a página
+        window.onload = initializeFirebase;
+    </script>
+</body>
+</html>
